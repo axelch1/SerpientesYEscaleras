@@ -1,0 +1,11 @@
+package Modelo;
+
+public enum Updates {
+	CAMBIO_JUGADOR,
+	CAMBIO_DADO,
+	CAMBIO_POSICION,
+	ESCALERA,
+	SERPIENTE,
+	FIN_DEL_JUEGO,
+	COMIENZO_DEL_JUEGO
+}
