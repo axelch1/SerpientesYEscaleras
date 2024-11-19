@@ -2,9 +2,6 @@ package VistaGrafica;
 
 import Controlador.Controlador;
 import Controlador.Ivista;
-import Modelo.Dado;
-import Modelo.Jugador;
-import Modelo.Updates;
 
 public class VistaGrafica implements Ivista{
 	private VentanaInicio VentanaInicio;
@@ -18,12 +15,15 @@ public class VistaGrafica implements Ivista{
 		this.VentanaJuego = new VentanaJuego(this);
 		this.VentanaFin = new VentanaFin(this);
 	}
-	
 
+	public void mostrarPieza(int nj) {
+		this.VentanaJuego.mostrarPieza(nj);
+
+	}
 	
 	@Override
 	public void comenzar() {
-		this.mostrarMenuInicio();
+		Controlador.comenzar();
 	}
 
 	@Override
@@ -31,7 +31,6 @@ public class VistaGrafica implements Ivista{
 		this.VentanaInicio.setVisible(true);
 		this.VentanaJuego.setVisible(false);
 		this.VentanaFin.setVisible(false);
-		
 	}
 
 	@Override
@@ -41,24 +40,24 @@ public class VistaGrafica implements Ivista{
 	}
 
 	@Override
-	public void mostrarMenuFin(Jugador jugador) {
+	public void mostrarMenuFin(String name) {
 		this.VentanaJuego.setVisible(false);
 		this.VentanaJuego.reiniciar();
-		this.VentanaFin.MostrarGanador(jugador);
+		this.VentanaFin.MostrarGanador(name);
 		this.VentanaFin.setVisible(true);
 		
 		
 	}
 
 	@Override
-	public void mostrarJugador(Jugador jugador) {
-		this.VentanaJuego.mostrarJugador(jugador);
+	public void mostrarJugador(String name) {
+		this.VentanaJuego.mostrarJugador(name);
 		
 	}
 
 	@Override
-	public void cambioPosicion(Jugador jugador) {
-		this.VentanaJuego.cambioPosicion(jugador);
+	public void cambioPosicion(int pos, int num) {
+		this.VentanaJuego.cambioPosicion(pos, num);
 
 		
 	}
@@ -81,33 +80,20 @@ public class VistaGrafica implements Ivista{
 		this.Controlador = ctrl;
 	}
 
+	@Override
 	public void agregarJugador(String nombre) {
 		Controlador.agregarJugador(nombre);
 	}
-	
-	public void Comenzar() {
-		Controlador.comenzar();
-		
-	}
-	
+
+	@Override
 	public void jugarTurno() {
 		Controlador.jugarTurno();
 	}
 
-
-
 	@Override
-	public void mostrarDado(Dado dado) {
-		this.VentanaJuego.mostrarDado(dado);
-		
+	public void mostrarDado(int cara) {
+		this.VentanaJuego.mostrarDado(cara);
+
 	}
-
-
-
-	@Override
-	public void mostrarPieza(int nj) {
-		this.VentanaJuego.mostrarPieza(nj);
-	}
-	
 
 }

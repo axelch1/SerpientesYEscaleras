@@ -12,9 +12,8 @@ public class Controlador implements Observador {
 	public Controlador (Ivista vista) {
 		this.vista = vista;
 		this.game.agregarObservador(this);
-		vista.mostrarMenuInicio();
 		vista.setControlador(this);
-		vista.comenzar();
+		vista.mostrarMenuInicio();
 	}
 	
 	
@@ -22,12 +21,14 @@ public class Controlador implements Observador {
 	public void actualizar(Updates update) {
 		switch(update) {
 			case CAMBIO_JUGADOR:
-				vista.mostrarJugador(game.getJugadorActual());
+				vista.mostrarJugador(game.getJugadorActual().getNombre());
 				break;
 			case CAMBIO_DADO:
-				vista.mostrarDado(game.getDado());
+				vista.mostrarDado(game.getDado().getCara());
+				break;
 			case CAMBIO_POSICION:
-				vista.cambioPosicion(game.getJugadorActual());
+				vista.cambioPosicion(game.getJugadorActual().getPosicion(),
+						             game.getJugadorActual().getNumero());
 				break;
 			case ESCALERA:
 				vista.mostrarEscalera();
@@ -36,7 +37,7 @@ public class Controlador implements Observador {
 				vista.mostrarSerpiente();
 				break;
 			case FIN_DEL_JUEGO:
-				vista.mostrarMenuFin(game.getJugadorActual());
+				vista.mostrarMenuFin(game.getJugadorActual().getNombre());
 				break;
 			case COMIENZO_DEL_JUEGO:
 				vista.mostrarMenuJuego();

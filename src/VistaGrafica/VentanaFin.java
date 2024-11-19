@@ -100,7 +100,7 @@ public class VentanaFin extends JFrame {
 		contentPane.add(winner);
 	}
 
-	public void MostrarGanador(Jugador jugador) {
-		lblganador.setText(jugador.getNombre() + " a ganado!");
+	public void MostrarGanador(String name) {
+		lblganador.setText(name + " a ganado!");
 	}
 }

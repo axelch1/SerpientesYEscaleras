@@ -26,19 +26,20 @@ public class Juego {
 	
 	//Observers
 	public void agregarObservador(Observador observador) {
+
 		observers.add(observador);
 	}
 	
 	private void agregarCambio(Updates update) {
 		cambios.add(update);
-		for (Observador o : observers)
-			o.actualizar(update);
 	}
 
 	private void notificarObservers() {
-		for (Observador o : observers)
-			for (Updates c : cambios)
+		for (Observador o : observers) {
+			for (Updates c : cambios) {
 				o.actualizar(c);
+			}
+		}
 		cambios.clear();
 	}
 	
@@ -56,8 +57,8 @@ public class Juego {
 			agregarCambio(Updates.CAMBIO_JUGADOR);
 			for(Jugador j : jugadores) {
 				j.cambiarPosicion(1);
-				agregarCambio(Updates.CAMBIO_POSICION);
 			}
+			agregarCambio(Updates.CAMBIO_POSICION);
 			jugadorActual = 0;
 			estado = JUGANDO;
 			notificarObservers();
@@ -87,14 +88,16 @@ public class Juego {
 			pos = tablero.posEscalera(pos);
 			jugadores.get(jugadorActual).cambiarPosicion(pos);
 			agregarCambio(Updates.ESCALERA);
+			agregarCambio(Updates.CAMBIO_POSICION);
+			notificarObservers();
 		}
 		if (tablero.esSerpiente(pos)) {
 			pos = tablero.posSerpiente(pos);
 			jugadores.get(jugadorActual).cambiarPosicion(pos);
 			agregarCambio(Updates.SERPIENTE);
+			agregarCambio(Updates.CAMBIO_POSICION);
+			notificarObservers();
 		}
-		agregarCambio(Updates.CAMBIO_POSICION);
-		notificarObservers();
 		
 		if (pos == 100) {
 			numero = 1;

@@ -75,11 +75,11 @@ public class VentanaInicio extends JFrame {
 				vista.mostrarPieza(nj);
 				textField.setText("");
 				nj++;
-				if (nj>4) {
+				if (nj > 4) {
 					boton1.setEnabled(false);
 					lblmaximo.setText("Maximo de jugadores");
 				}
-				if(nj>2)
+				if(nj > 2)
 					boton2.setEnabled(true);
 			}
 		});
@@ -97,7 +97,7 @@ public class VentanaInicio extends JFrame {
 		boton2.setEnabled(false);
 		boton2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				vista.Comenzar();
+				vista.comenzar();
 				labeljugador.setText("");
 				lblmaximo.setText("");
 				nj = 1;

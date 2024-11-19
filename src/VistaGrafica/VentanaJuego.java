@@ -213,12 +213,12 @@ public class VentanaJuego extends JFrame {
 		reproducirMusica("./sound/musica.wav");
 	}
 
-	public void mostrarJugador(Jugador jugador) {
-		lblNewLabel_1.setText(jugador.getNombre());
+	public void mostrarJugador(String name) {
+		lblNewLabel_1.setText(name);
 	}
 	
-	public void mostrarDado(Dado Dado) {
-		switch(Dado.getCara()) {
+	public void mostrarDado(int cara) {
+		switch(cara) {
 			case 1:
 				dado.setIcon(new ImageIcon("./Img/cara 1.png"));
 				break;
@@ -259,62 +259,21 @@ public class VentanaJuego extends JFrame {
 		pieza.setVisible(true);
 	}
 	
-	public void cambioPosicion(Jugador jugador) {
-		JLabel pieza = elegirpieza(jugador.getNumero());
+	public void cambioPosicion(int pos, int num) {
+		JLabel pieza = elegirpieza(num);
 		pieza.setVisible(true);
-		pieza.setBounds(posx(jugador.getPosicion()), posy(jugador.getPosicion()), 80, 80);
+		pieza.setBounds(posx(pos), posy(pos), 80, 80);
 		
 	}
 
 	private int posy(int pos) {
-		int npos = 0;
-		if (pos<= 10)
-			npos = 675;
-		if (pos>10 && pos<=20)
-			npos = 600;
-		if (pos>20 && pos<=30)
-			npos = 525;
-		if (pos>30 && pos<=40)
-			npos = 450;
-		if (pos>40 && pos<=50)
-			npos = 375;
-		if (pos>50 && pos<=60)
-			npos = 300;
-		if (pos>60 && pos<=70)
-			npos = 225;
-		if (pos>70 && pos<=80)
-			npos = 150;
-		if (pos>80 && pos<=90)
-			npos = 75;
-		if (pos>90 && pos<=100)
-			npos = 0;
-		return npos;
+		return 675 - ((pos - 1) / 10) * 75;
 	}
 
 	private int posx(int pos) {
-		int npos = 0;
-		int div = (pos-1)%10;
-		if (pos<= 10)
-			npos = div*75;
-		if (pos>10 && pos<=20)
-			npos = 675 - (div*75);
-		if (pos>20 && pos<=30)
-			npos = div*75;
-		if (pos>30 && pos<=40)
-			npos = 675 - (div*75);
-		if (pos>40 && pos<=50)
-			npos = div*75;
-		if (pos>50 && pos<=60)
-			npos = 675 - (div*75);
-		if (pos>60 && pos<=70)
-			npos = div*75;
-		if (pos>70 && pos<=80)
-			npos = 675 - (div*75);
-		if (pos>80 && pos<=90)
-			npos = div*75;
-		if (pos>90 && pos<=100)
-			npos = 675 - (div*75);
-		return npos;
+		int div = (pos - 1) % 10;  // Índice de la columna
+		int fila = (pos - 1) / 10; // Índice de la fila
+		return (fila % 2 == 0) ? div * 75 : 675 - (div * 75);
 	}
 
 	private JLabel elegirpieza(int numero) {
