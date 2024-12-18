@@ -1,53 +1,24 @@
 package VistaGrafica;
 
-import java.awt.BorderLayout;
-
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JTextField;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import java.awt.Font;
-import java.awt.Color;
+import java.util.ArrayList;
 
 public class VentanaInicio extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private VistaGrafica vista;
-	private JButton boton2;
+	private JButton botonAgregarse;
+	private JButton botonComenzar;
+	private JButton botonRanking;
 	private JLabel labeljugador;
-	private int nj = 1;
 	private JLabel lblmaximo;
 
-	/**
-	 * Launch the application.
-	 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaInicio frame = new VentanaInicio();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	*/
-
-	/**
-	 * Create the frame.
-	 */
 	public VentanaInicio(VistaGrafica vista) {
 		this.vista = vista;
 		
@@ -65,15 +36,19 @@ public class VentanaInicio extends JFrame {
 		label.setBounds(187, 0, 238, 350);
 		contentPane.add(label);
 		
-		JButton boton1 = new JButton("Agregar jugador");
-		boton1.setForeground(Color.BLUE);
-		boton1.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		boton1.addActionListener(new ActionListener() {
+		botonAgregarse = new JButton("Agregarse");
+		botonAgregarse.setForeground(Color.BLUE);
+		botonAgregarse.setFont(new Font("MV Boli", Font.PLAIN, 14));
+		botonAgregarse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vista.agregarJugador(textField.getText());
-				labeljugador.setText(textField.getText() + " agregado");
-				vista.mostrarPieza(nj);
+				//labeljugador.setText(textField.getText() + " agregado");
+				//vista.mostrarPieza(nj);
+				//vista.mostrarPieza();
 				textField.setText("");
+				botonAgregarse.setEnabled(false);
+
+				/* comprobacion de jugadores antigua
 				nj++;
 				if (nj > 4) {
 					boton1.setEnabled(false);
@@ -81,48 +56,89 @@ public class VentanaInicio extends JFrame {
 				}
 				if(nj > 2)
 					boton2.setEnabled(true);
+
+				 */
 			}
 		});
-		boton1.setBounds(26, 146, 151, 38);
-		contentPane.add(boton1);
+		botonAgregarse.setBounds(26, 115, 151, 38);
+		contentPane.add(botonAgregarse);
 		
 		JLabel lblNewLabel = new JLabel("Nombre jugador:");
 		lblNewLabel.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		lblNewLabel.setBounds(26, 80, 118, 23);
+		lblNewLabel.setBounds(26, 50, 118, 23);
 		contentPane.add(lblNewLabel);
 		
-		boton2 = new JButton("Iniciar juego");
-		boton2.setForeground(Color.BLUE);
-		boton2.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		boton2.setEnabled(false);
-		boton2.addActionListener(new ActionListener() {
+		botonComenzar = new JButton("Iniciar juego");
+		botonComenzar.setForeground(Color.BLUE);
+		botonComenzar.setFont(new Font("MV Boli", Font.PLAIN, 14));
+		botonComenzar.setEnabled(false);
+		botonComenzar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vista.comenzar();
 				labeljugador.setText("");
 				lblmaximo.setText("");
-				nj = 1;
-				boton2.setEnabled(false);
+				//nj = 1;
 			}
 		});
-		boton2.setBounds(26, 281, 151, 38);
-		contentPane.add(boton2);
+		botonComenzar.setBounds(26, 281, 151, 38);
+		contentPane.add(botonComenzar);
+
+		botonRanking = new JButton("Ranking");
+		botonRanking.setForeground(Color.BLUE);
+		botonRanking.setFont(new Font("MV Boli", Font.PLAIN, 14));
+		botonRanking.setEnabled(true);
+		botonRanking.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				vista.getRanking();
+			}
+		});
+		botonRanking.setBounds(26, 5, 151, 38);
+		contentPane.add(botonRanking);
 		
 		
 		
 		textField = new JTextField();
 		textField.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		textField.setBounds(26, 105, 151, 30);
+		textField.setBounds(26, 75, 151, 30);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
 		labeljugador = new JLabel("");
 		labeljugador.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		labeljugador.setBounds(26, 195, 151, 23);
+		labeljugador.setBounds(26, 165, 151, 92);
+		labeljugador.setVerticalAlignment(SwingConstants.TOP); // Alineación vertical
+		labeljugador.setHorizontalAlignment(SwingConstants.LEFT); // Alineación horizontal
 		contentPane.add(labeljugador);
 		
 		lblmaximo = new JLabel("");
 		lblmaximo.setFont(new Font("MV Boli", Font.PLAIN, 14));
 		lblmaximo.setBounds(26, 218, 151, 23);
 		contentPane.add(lblmaximo);
+	}
+
+	public void mostrarJugadores(ArrayList<String> listaJugadores) {
+		StringBuilder jugadoresHTML = new StringBuilder("<html>");
+
+		for (String jugador : listaJugadores) {
+			jugadoresHTML.append(jugador).append("<br>");
+		}
+
+		jugadoresHTML.append("</html>");
+
+		labeljugador.setText(jugadoresHTML.toString());
+
+		if (listaJugadores.size() >= 2) {
+			botonComenzar.setEnabled(true);
+
+		}
+	}
+
+	public void mostrarMaximoJugadores() {
+		lblmaximo.setText("Maximo de jugadores");
+	}
+
+	public void reiniciarBotones() {
+		botonComenzar.setEnabled(false);
+		botonAgregarse.setEnabled(true);
 	}
 }

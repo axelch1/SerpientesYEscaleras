@@ -1,9 +1,13 @@
 package Modelo;
 
+import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
+
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 
-public class Juego {
+public class Juego extends ObservableRemoto implements IJuego {
+
 	private Dado dado = new Dado();
 	private Tablero tablero = new Tablero();
 	private final static int INICIANDO = 0;
@@ -17,24 +21,38 @@ public class Juego {
 	
 
 	//Singleton
-	private static Juego instancia = new Juego();
-	
+	private static Juego instancia;
+
 	public static Juego getInstance() {
+		if (instancia == null) {
+			instancia = new Juego();
+		}
 		return instancia;
 	}
-	
-	
+
+	private Juego() {
+		super();
+	}
+
+
 	//Observers
+	/*
+	@Override
 	public void agregarObservador(Observador observador) {
 
 		observers.add(observador);
 	}
+
+	 */
 	
 	private void agregarCambio(Updates update) {
 		cambios.add(update);
 	}
 
-	private void notificarObservers() {
+	//notificar Observers sin RMI
+	/*
+	@Override
+	public void notificarObservadores() {
 		for (Observador o : observers) {
 			for (Updates c : cambios) {
 				o.actualizar(c);
@@ -42,16 +60,28 @@ public class Juego {
 		}
 		cambios.clear();
 	}
+	 */
+
+	private void notificar() throws RemoteException {
+		for (Updates c : cambios) {
+			notificarObservadores(c);
+		}
+		cambios.clear();
+	}
 	
 	//Juego
-	public void agregarJugador(String nombre) {
+	@Override
+	public void agregarJugador(String nombre) throws RemoteException{
 		if (estado == INICIANDO) {
 			jugadores.add(new Jugador(nombre, numero));
 			numero++;
 		}
+		agregarCambio(Updates.MOSTRAR_JUGADOR);
+		this.notificar();
 	}
 		
-	public void comenzar() {
+	@Override
+	public void comenzar() throws RemoteException {
 		if (jugadores.size() >= 2) {
 			agregarCambio(Updates.COMIENZO_DEL_JUEGO);
 			agregarCambio(Updates.CAMBIO_JUGADOR);
@@ -61,7 +91,7 @@ public class Juego {
 			agregarCambio(Updates.CAMBIO_POSICION);
 			jugadorActual = 0;
 			estado = JUGANDO;
-			notificarObservers();
+			this.notificar();
 		}
 	}
 	
@@ -70,9 +100,10 @@ public class Juego {
 		if (jugadorActual == jugadores.size())
 			jugadorActual = 0;
 	}
-	
-	
-	public void jugarTurno() {
+
+
+	@Override
+	public void jugarTurno() throws RemoteException {
 		
 		int pos;
 		dado.tirardado();
@@ -81,45 +112,69 @@ public class Juego {
 			pos = 100 - (pos-100);
 		}
 		jugadores.get(jugadorActual).cambiarPosicion(pos);
+		jugadores.get(jugadorActual).sumarMovimiento();
 		agregarCambio(Updates.CAMBIO_DADO);
 		agregarCambio(Updates.CAMBIO_POSICION);
-		notificarObservers();
+		this.notificar();
+
 		if (tablero.esEscalera(pos)) {
 			pos = tablero.posEscalera(pos);
 			jugadores.get(jugadorActual).cambiarPosicion(pos);
 			agregarCambio(Updates.ESCALERA);
 			agregarCambio(Updates.CAMBIO_POSICION);
-			notificarObservers();
+			this.notificar();
 		}
 		if (tablero.esSerpiente(pos)) {
 			pos = tablero.posSerpiente(pos);
 			jugadores.get(jugadorActual).cambiarPosicion(pos);
 			agregarCambio(Updates.SERPIENTE);
 			agregarCambio(Updates.CAMBIO_POSICION);
-			notificarObservers();
+			this.notificar();
 		}
 		
 		if (pos == 100) {
 			numero = 1;
 			estado = INICIANDO;
 			agregarCambio(Updates.FIN_DEL_JUEGO);
-			notificarObservers();
+			this.notificar();
 			jugadores.clear();
+		}
+
+		if (dado.getCara() == 6) {
+			agregarCambio(Updates.SACO_6);
+			this.notificar();
 		}
 		
 		if (dado.getCara() != 6 && pos != 100) {
 		cambiarJugador();
 		agregarCambio(Updates.CAMBIO_JUGADOR);
-		notificarObservers();
+		this.notificar();
 		}
 	}
+
 	
-	public Jugador getJugadorActual() {
+	@Override
+	public Jugador getJugadorActual() throws RemoteException{
 		return jugadores.get(jugadorActual);
 	}
-	
-	public Dado getDado() {
+
+	@Override
+	public ArrayList<String> getJugadores() throws RemoteException{
+		ArrayList<String> listaJugadores = new ArrayList<>();
+		for (Jugador jugador : jugadores) {
+			listaJugadores.add(jugador.getNombre());
+		}
+		return listaJugadores;
+	}
+
+	@Override
+	public Dado getDado() throws RemoteException{
 		return dado;
+	}
+
+	@Override
+	public int getNumero() throws RemoteException{
+		return numero;
 	}
 	
 

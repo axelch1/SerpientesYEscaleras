@@ -1,15 +1,19 @@
 package Modelo;
 
-public class Jugador {
-	
+import java.io.Serializable;
+
+public class Jugador implements Serializable {
+
 	private String nombre;
 	private int numero;
 	private int posicion;
+	private int movimientos;
 	
 	public Jugador(String Nombre, int Numero) {
 		this.nombre = Nombre;
 		this.numero = Numero;
-		posicion = 1;
+		this.posicion = 1;
+		this.movimientos = 0;
 	}
 	
 	public String getNombre () {
@@ -27,5 +31,13 @@ public class Jugador {
 	public void cambiarPosicion(int nPosicion) {
 		posicion = nPosicion;
 	}
-	
+
+    public int getMovimientos() {
+        return movimientos;
+    }
+
+	public void sumarMovimiento() {
+		movimientos++;
+	}
+
 }

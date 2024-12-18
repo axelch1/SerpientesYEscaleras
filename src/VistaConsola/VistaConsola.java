@@ -2,21 +2,19 @@ package VistaConsola;
 
 import Controlador.Controlador;
 import Controlador.Ivista;
-import Modelo.Dado;
-import Modelo.Jugador;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class Consola extends JFrame implements Ivista {
+public class VistaConsola extends JFrame implements Ivista {
     private JTextArea textArea1;
     private JPanel panel1;
     private JTextField textField1;
     private Controlador Controlador;
     private EstadoConsola estado;
-    private int nj = 0;
 
-    public Consola() {
+    public VistaConsola() {
         setTitle("SyE Consola");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
@@ -44,11 +42,16 @@ public class Consola extends JFrame implements Ivista {
 
     private void procesarEntrada (String entrada) {
         switch (estado) {
+            case COMIENZO:
+                procesarEntradaComienzo(entrada);
+                break;
             case INICIO:
                 procesarEntradaInicio(entrada);
                 break;
             case JUEGO:
                 procesarEntradaJuego(entrada);
+                break;
+            case ESPERANDO:
                 break;
             case FIN:
                 procesarEntradaFin(entrada);
@@ -62,26 +65,20 @@ public class Consola extends JFrame implements Ivista {
         }
     }
 
-    private void procesarEntradaInicio(String entrada) {
-        if (Objects.equals(entrada, "iniciar")) {
-            if (nj >= 2) {
-                estado = EstadoConsola.JUEGO;
-                textArea1.setText(null);
-                this.comenzar();
-                nj = 0;
-            }
-            else {
-                println("debe haber al menos 2 jugadores para iniciar");
-            }
+    private void procesarEntradaComienzo(String entrada) {
+        if (Objects.equals(entrada, "ranking")) {
+            Controlador.mostrarRanking();
         }
         else {
-            if (nj < 4) {
-                agregarJugador(entrada);
-            }
-            else {
-                println("ya se ha alcanzado el maximo de jugadores");
-                println("ingrese -iniciar- para comenzar");
-            }
+            agregarJugador(entrada);
+            estado = EstadoConsola.ESPERANDO;
+        }
+    }
+
+    private void procesarEntradaInicio(String entrada) {
+        if (Objects.equals(entrada, "iniciar")) {
+            estado = EstadoConsola.ESPERANDO;
+            this.comenzar();
         }
     }
 
@@ -96,17 +93,23 @@ public class Consola extends JFrame implements Ivista {
     }
 
     @Override
+    public void comenzar() {
+        Controlador.comenzar();
+    }
+
+    @Override
     public void mostrarMenuInicio() {
         textArea1.setText(null);
-        estado = EstadoConsola.INICIO;
+        estado = EstadoConsola.COMIENZO;
         println("Serpientes y Escaleras");
         println("");
-        println("Ingrese nombre de jugador:");
-        println("Ingrese -iniciar- para comenzar a jugar");
+        println("Ingrese -ranking- para ver el ranking");
+        println("Ingresa tu nombre para agregarte a la lista de jugadores");
     }
 
     @Override
     public void mostrarMenuJuego() {
+        textArea1.setText(null);
         println("¡Juego iniciado!");
         println("");
         println("SERPIENTES      ESCALERAS");
@@ -130,33 +133,49 @@ public class Consola extends JFrame implements Ivista {
     }
 
     @Override
+    public void mostrarJugadores(ArrayList<String> listaJugadores) {
+        println("JUGADORES:");
+        for (String jugador : listaJugadores) {
+            println(jugador);
+        }
+        if (listaJugadores.size() >= 2) {
+            estado = EstadoConsola.INICIO;
+            println("Ingrese -iniciar- para comenzar a jugar");
+        }
+    }
+
+    @Override
     public void mostrarJugador(String name) {
         println("");
         println("Turno de " + name);
     }
 
     @Override
+    public void habilitarJugador() {
+        estado = EstadoConsola.JUEGO;
+        println("Ingrese -tirar- para tirar el dado");
+    }
+
+    @Override
     public void cambioPosicion(int pos, int num) {
-        println("Ahora estas en la posicion " + pos);
+        println("Esta en la posicion " + pos);
     }
 
     @Override
     public void agregarJugador(String nombre) {
         Controlador.agregarJugador(nombre);
-        nj++;
-        println("");
-        println(nombre + " agregado!");
     }
 
     @Override
     public void jugarTurno() {
+        estado = EstadoConsola.ESPERANDO;
         Controlador.jugarTurno();
     }
 
     @Override
     public void mostrarDado(int cara) {
+        println("");
         println("El dado muestra: " + cara);
-        if (cara == 6) println("Sacaste 6 vuelve a tirar!");
     }
 
     @Override
@@ -172,12 +191,28 @@ public class Consola extends JFrame implements Ivista {
     }
 
     @Override
-    public void comenzar() {
-        Controlador.comenzar();
+    public void mostrar6() {
+        println("Sacaste 6 vuelve a tirar!");
     }
+
+
 
     @Override
     public void setControlador(Controlador ctrl) {
         this.Controlador = ctrl;
     }
+
+    @Override
+    public void mostrarMaximoJugadores() {
+        println("ya se ha alcanzado el maximo de jugadores");
+    }
+
+    @Override
+    public void mostrarRanking(String ranking) {
+        println("");
+        println("Ranking de jugadores:\n");
+        println("----------------------\n");
+        println(ranking);
+    }
+
 }

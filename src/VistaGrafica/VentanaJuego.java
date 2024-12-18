@@ -1,16 +1,9 @@
 package VistaGrafica;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Modelo.Dado;
-import Modelo.Jugador;
-
-import java.awt.Panel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.sound.sampled.AudioInputStream;
@@ -25,8 +18,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -41,6 +32,7 @@ public class VentanaJuego extends JFrame {
 	private VistaGrafica vista;
 	private JLabel lblNewLabel_1;
 	private int player = 1;
+	private final JButton btnTirarDado;
 	private JLabel pieza_roja;
 	private JLabel pieza_azul;
 	private JLabel pieza_verde;
@@ -164,23 +156,25 @@ public class VentanaJuego extends JFrame {
 		lblNewLabel_1.setFont(new Font("MV Boli", Font.PLAIN, 18));
 		lblNewLabel_1.setBounds(10, 130, 86, 23);
 		panel_1.add(lblNewLabel_1);
-		
-		JButton btnNewButton = new JButton("tirar dado");
-		btnNewButton.setFocusable(false);
-		btnNewButton.setBackground(Color.DARK_GRAY);
-		btnNewButton.setForeground(Color.ORANGE);
-		btnNewButton.setFont(new Font("MV Boli", Font.PLAIN, 14));
-		btnNewButton.addActionListener(new ActionListener() {
+
+		btnTirarDado = new JButton("tirar dado");
+		btnTirarDado.setFocusable(false);
+		btnTirarDado.setEnabled(false); //deshabilita al jugador
+		btnTirarDado.setBackground(Color.DARK_GRAY);
+		btnTirarDado.setForeground(Color.ORANGE);
+		btnTirarDado.setFont(new Font("MV Boli", Font.PLAIN, 14));
+		btnTirarDado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ReproducirSonido("./sound/dice.wav");
 				notificaciones.setText("");
 				notificaciones2.setText("");
-				lblSoE.setText("");
+				//lblSoE.setText("");
+				btnTirarDado.setEnabled(false); //deshabilita al jugador
 				vista.jugarTurno();
 			}
 		});
-		btnNewButton.setBounds(25, 528, 113, 90);
-		panel_1.add(btnNewButton);
+		btnTirarDado.setBounds(25, 528, 113, 90);
+		panel_1.add(btnTirarDado);
 		
 		dado = new JLabel("");
 		dado.setIcon(new ImageIcon(".Img/cara 1.png"));
@@ -218,6 +212,7 @@ public class VentanaJuego extends JFrame {
 	}
 	
 	public void mostrarDado(int cara) {
+		lblSoE.setText("");
 		switch(cara) {
 			case 1:
 				dado.setIcon(new ImageIcon("./Img/cara 1.png"));
@@ -236,9 +231,11 @@ public class VentanaJuego extends JFrame {
 				break;
 			case 6:	
 				dado.setIcon(new ImageIcon("./Img/cara 6.png"));
+				/*
 				notificaciones.setText("Sacaste un 6 ");
 				notificaciones2.setText("Tira denuevo!");
 				ReproducirSonido("./sound/6face.wav");
+				 */
 				break;
 		}
 	}
@@ -264,6 +261,16 @@ public class VentanaJuego extends JFrame {
 		pieza.setVisible(true);
 		pieza.setBounds(posx(pos), posy(pos), 80, 80);
 		
+	}
+
+	public void mostrar6() {
+		notificaciones.setText("Sacaste un 6 ");
+		notificaciones2.setText("Tira denuevo!");
+		ReproducirSonido("./sound/6face.wav");
+	}
+
+	public void habilitarJugador() {
+		btnTirarDado.setEnabled(true);
 	}
 
 	private int posy(int pos) {
@@ -302,5 +309,5 @@ public class VentanaJuego extends JFrame {
 		notificaciones2.setText("");
 		
 	}
-	
+
 }

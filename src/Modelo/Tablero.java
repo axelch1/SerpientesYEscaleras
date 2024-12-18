@@ -1,9 +1,10 @@
 package Modelo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Tablero {
+public class Tablero implements Serializable {
 
     private final Map<Integer, Integer> serpientes = new HashMap<>();
     private final Map<Integer, Integer> escaleras = new HashMap<>();

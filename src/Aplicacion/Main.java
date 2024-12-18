@@ -2,7 +2,7 @@ package Aplicacion;
 
 import Controlador.Controlador;
 import Controlador.Ivista;
-import VistaConsola.Consola;
+import VistaConsola.VistaConsola;
 import VistaGrafica.VistaGrafica;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class Main {
 			vista = new VistaGrafica();
 		} else if (seleccion == 1) {
 			System.out.println("Seleccionaste Vista Consola");
-			vista = new Consola();
+			vista = new VistaConsola();
 		} else {
 			System.out.println("No se seleccionó ninguna opción.");
 		}
